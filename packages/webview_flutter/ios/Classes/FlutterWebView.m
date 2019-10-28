@@ -112,6 +112,8 @@
     [self onCurrentUrl:call result:result];
   } else if ([[call method] isEqualToString:@"evaluateJavascript"]) {
     [self onEvaluateJavaScript:call result:result];
+  } else if ([[call method] isEqualToString:@"getAllCookies"]){
+    [self getAllCookies:call result:result];
   } else if ([[call method] isEqualToString:@"addJavascriptChannels"]) {
     [self onAddJavaScriptChannels:call result:result];
   } else if ([[call method] isEqualToString:@"removeJavascriptChannels"]) {
@@ -195,6 +197,29 @@
                  result([NSString stringWithFormat:@"%@", evaluateResult]);
                }
              }];
+}
+
+- (void)getAllCookies:(FlutterMethodCall*)call result:(FlutterResult)result {
+    if (_webView != nil) {
+        if (@available(iOS 11.0, *)) {
+            WKHTTPCookieStore *cookieStore = _webView.configuration.websiteDataStore.httpCookieStore;
+            [cookieStore getAllCookies:^(NSArray<NSHTTPCookie *> * _Nonnull cookies) {
+                NSMutableDictionary *map = [NSMutableDictionary dictionary];
+                NSMutableString *cookiesString = [NSMutableString string];
+                for(NSHTTPCookie *cookie in cookies){
+                    [cookiesString appendString:cookie.name];
+                    [cookiesString appendString:@"="];
+                    [cookiesString appendString:cookie.value];
+                    if (cookies.lastObject.name != cookie.name) {
+                        [cookiesString appendString:@"; "];
+                    }
+                }
+                result([NSString stringWithFormat:@"%@", cookiesString]);
+            }];
+        } else {
+            // Fallback on earlier versions
+        }
+    }
 }
 
 - (void)onAddJavaScriptChannels:(FlutterMethodCall*)call result:(FlutterResult)result {

@@ -10,6 +10,7 @@ import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.os.Handler;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.webkit.WebStorage;
 import android.webkit.WebViewClient;
 import io.flutter.plugin.common.BinaryMessenger;
@@ -125,6 +126,9 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
       case "evaluateJavascript":
         evaluateJavaScript(methodCall, result);
         break;
+      case "getAllCookies":
+        getAllCookies(methodCall, result);
+        break;
       case "addJavascriptChannels":
         addJavaScriptChannels(methodCall, result);
         break;
@@ -205,6 +209,15 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
             result.success(value);
           }
         });
+  }
+
+  private void getAllCookies(MethodCall methodCall, final Result result) {
+    String url = (String) methodCall.arguments;
+
+    CookieManager cookieManager = CookieManager.getInstance();
+    cookieManager.setAcceptCookie(true);
+    String cookies = cookieManager.getCookie(url);
+    result.success(cookies);
   }
 
   @SuppressWarnings("unchecked")
