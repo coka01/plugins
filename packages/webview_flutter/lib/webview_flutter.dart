@@ -69,6 +69,8 @@ enum NavigationDecision {
 /// See also: [WebView.navigationDelegate].
 typedef NavigationDecision NavigationDelegate(NavigationRequest navigation);
 
+typedef void ProgressChangedCallback(double progress);
+
 /// Signature for when a [WebView] has finished loading a page.
 typedef void PageFinishedCallback(String url);
 
@@ -138,6 +140,7 @@ class WebView extends StatefulWidget {
     this.javascriptChannels,
     this.navigationDelegate,
     this.gestureRecognizers,
+    this.onProgressChanged,
     this.onPageFinished,
     this.debuggingEnabled = false,
     this.userAgent,
@@ -251,6 +254,8 @@ class WebView extends StatefulWidget {
   ///       webview, and frames will be opened in the main frame.
   ///     * When a navigationDelegate is set HTTP requests do not include the HTTP referer header.
   final NavigationDelegate navigationDelegate;
+
+  final ProgressChangedCallback onProgressChanged;
 
   /// Invoked when a page has finished loading.
   ///
@@ -437,6 +442,13 @@ class _PlatformCallbacksHandler implements WebViewPlatformCallbacksHandler {
     final bool allowNavigation =
         _widget.navigationDelegate == null || _widget.navigationDelegate(request) == NavigationDecision.navigate;
     return allowNavigation;
+  }
+
+  @override
+  void onProgressChanged(double progress) {
+    if (_widget.onProgressChanged != null) {
+      _widget.onProgressChanged(progress);
+    }
   }
 
   @override

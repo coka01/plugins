@@ -72,6 +72,9 @@
     _webView = [[WKWebView alloc] initWithFrame:frame configuration:configuration];
     _navigationDelegate = [[FLTWKNavigationDelegate alloc] initWithChannel:_channel];
     _webView.navigationDelegate = _navigationDelegate;
+
+    [_webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
+
     __weak __typeof__(self) weakSelf = self;
     [_channel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
       [weakSelf onMethodCall:call result:result];
@@ -229,6 +232,14 @@
   [self registerJavaScriptChannels:channelNamesSet
                         controller:_webView.configuration.userContentController];
   result(nil);
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"estimatedProgress"] && object == _webView) {
+        [_channel invokeMethod:@"onProgressChanged" arguments:@{@"progress": @(_webView.estimatedProgress)}];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 - (void)onRemoveJavaScriptChannels:(FlutterMethodCall*)call result:(FlutterResult)result {
