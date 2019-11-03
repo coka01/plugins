@@ -66,9 +66,6 @@ class _WebViewExampleState extends State<WebViewExample> {
             print('allowing navigation to $request');
             return NavigationDecision.navigate;
           },
-          onProgressChanged: (double progress) {
-            print('Progress changed: $progress');
-          },
           onPageFinished: (String url) {
             print('Page finished loading: $url');
           },
