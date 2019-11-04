@@ -117,6 +117,7 @@ enum MenuOptions {
   listCache,
   clearCache,
   navigationDelegate,
+  close,
 }
 
 class SampleMenu extends StatelessWidget {
@@ -138,6 +139,9 @@ class SampleMenu extends StatelessWidget {
                 break;
               case MenuOptions.getAllCookies:
                 _onGetAllCookies(controller.data, context);
+                break;
+              case MenuOptions.close:
+                _onClose(controller.data);
                 break;
               case MenuOptions.listCookies:
                 _onListCookies(controller.data, context);
@@ -168,6 +172,10 @@ class SampleMenu extends StatelessWidget {
             const PopupMenuItem<MenuOptions>(
               value: MenuOptions.getAllCookies,
               child: Text('Get all cookies'),
+            ),
+            const PopupMenuItem<MenuOptions>(
+              value: MenuOptions.close,
+              child: Text('Close'),
             ),
             const PopupMenuItem<MenuOptions>(
               value: MenuOptions.listCookies,
@@ -208,6 +216,10 @@ class SampleMenu extends StatelessWidget {
   void _onGetAllCookies(WebViewController controller, BuildContext context) async {
     final Map<String, String> cookies = await controller.getAllCookies('https://flutter.dev');
     Scaffold.of(context).showSnackBar(SnackBar(content: Text('Cookie: $cookies')));
+  }
+
+  void _onClose(WebViewController controller) async {
+    await controller.close();
   }
 
   void _onListCookies(WebViewController controller, BuildContext context) async {

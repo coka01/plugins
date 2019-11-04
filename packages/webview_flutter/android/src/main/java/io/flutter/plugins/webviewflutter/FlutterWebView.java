@@ -132,6 +132,9 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
       case "getAllCookies":
         getAllCookies(methodCall, result);
         break;
+      case "close":
+        close(methodCall, result);
+        break;
       case "addJavascriptChannels":
         addJavaScriptChannels(methodCall, result);
         break;
@@ -221,6 +224,11 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     cookieManager.setAcceptCookie(true);
     String cookies = cookieManager.getCookie(url);
     result.success(cookies);
+  }
+
+  private void close(MethodCall methodCall, final Result result) {
+    // do nothing.
+    result.success(null);
   }
 
   @SuppressWarnings("unchecked")

@@ -644,6 +644,10 @@ class WebViewController {
     return cookies;
   }
 
+  Future<void> close() async {
+    await _webViewPlatformController.close();
+  }
+
   /// Returns the title of the currently loaded page.
   Future<String> getTitle() {
     return _webViewPlatformController.getTitle();

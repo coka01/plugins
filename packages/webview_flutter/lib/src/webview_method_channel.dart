@@ -97,6 +97,11 @@ class MethodChannelWebViewPlatform implements WebViewPlatformController {
   }
 
   @override
+  Future<void> close() {
+    return _channel.invokeMethod<void>('close');
+  }
+
+  @override
   Future<void> addJavascriptChannels(Set<String> javascriptChannelNames) {
     return _channel.invokeMethod<void>('addJavascriptChannels', javascriptChannelNames.toList());
   }

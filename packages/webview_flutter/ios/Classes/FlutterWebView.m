@@ -117,6 +117,8 @@
     [self onEvaluateJavaScript:call result:result];
   } else if ([[call method] isEqualToString:@"getAllCookies"]){
     [self getAllCookies:call result:result];
+  } else if ([[call method] isEqualToString:@"close"]){
+      [self close:call result:result];
   } else if ([[call method] isEqualToString:@"addJavascriptChannels"]) {
     [self onAddJavaScriptChannels:call result:result];
   } else if ([[call method] isEqualToString:@"removeJavascriptChannels"]) {
@@ -222,6 +224,12 @@
         } else {
             // Fallback on earlier versions
         }
+    }
+}
+
+- (void)close:(FlutterMethodCall*)call result:(FlutterResult)result {
+    if (_webView != nil) {
+        [_webView removeObserver:self forKeyPath:@"estimatedProgress"];
     }
 }
 
