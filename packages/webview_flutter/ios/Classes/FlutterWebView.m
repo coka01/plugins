@@ -92,6 +92,10 @@
   return self;
 }
 
+- (void)dealloc {
+    [_webView removeObserver:self forKeyPath:@"estimatedProgress"];
+}
+
 - (UIView*)view {
   return _webView;
 }
